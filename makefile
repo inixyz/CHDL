@@ -1,2 +1,2 @@
 default:
-	g++ src/*.cpp -o dcm -lsfml-graphics -lsfml-window -lsfml-system
+	g++ src/*.cpp -Isrc/include -odcm -lsfml-graphics -lsfml-window -lsfml-system
