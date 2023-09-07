@@ -1,13 +1,16 @@
 #include "window.hpp"
+#include "render.hpp"
 
 using namespace dcm;
 
 void global_setup(){
 	window.setup();
+	render.setup();
 }
 
 void global_update(){
 	window.update();
+	render.update();
 }
 
 int main(){
