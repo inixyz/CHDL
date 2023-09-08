@@ -1,3 +1,4 @@
+#include "config.hpp"
 #include "window.hpp"
 #include "render.hpp"
 
@@ -14,6 +15,7 @@ void global_update(){
 }
 
 int main(){
+	config.load("config.json");
    global_setup();
    while(window.render_window.isOpen()) global_update();
 }
