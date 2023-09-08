@@ -1,10 +1,11 @@
 #pragma once
 
 #include <vector>
+#include <list>
 
 namespace dcm{
 	class Map{
-	public:
+	private:
 		struct Position{
 			unsigned int x, y;
 		};
@@ -26,7 +27,8 @@ namespace dcm{
 		};
 
 	public:
-		std::vector<std::vector<Cell>> data;
+		std::vector<std::vector<Cell>> cells;
+		std::list<WireGroup> wire_groups;
 
 	public:
 		void create(size_t width, size_t height);
