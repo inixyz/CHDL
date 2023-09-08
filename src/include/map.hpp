@@ -31,7 +31,7 @@ namespace dcm{
 		std::list<WireGroup> wire_groups;
 
 	public:
-		void create(size_t width, size_t height);
+		void reset(size_t width, size_t height);
 	};
 
 	extern Map map;
