@@ -16,6 +16,6 @@ void global_update(){
 
 int main(){
 	config.load("config.json");
-   global_setup();
-   while(window.render_window.isOpen()) global_update();
+	global_setup();
+	while(window.render_window.isOpen()) global_update();
 }

@@ -5,8 +5,8 @@
 namespace dcm{
 	class Config{
 	public:
-		unsigned int window_width = 640;
-		unsigned int window_height = 480;
+		size_t window_width = 640;
+		size_t window_height = 480;
 		unsigned int frame_rate_limit = 30;
 		bool vsync = true;
 
