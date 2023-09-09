@@ -2,37 +2,31 @@
 #include "window.hpp"
 #include "map.hpp"
 
+#define COLOR_BACKGROUND sf::Color(16, 20, 31)
+#define COLOR_GRID sf::Color(26, 30, 41)
+
 using namespace dcm;
 
 Render dcm::render;
 
-void Render::setup(){
+void Render::update_outline_position(){
+	outline[0].position = sf::Vector2f(0, 0);
+	outline[1].position = sf::Vector2f(map.width * CELL_SIZE, 0);
+	outline[2].position = sf::Vector2f(map.width * CELL_SIZE, map.height * CELL_SIZE);
+	outline[3].position = sf::Vector2f(0, map.height * CELL_SIZE);
+	outline[4].position = sf::Vector2f(0, 0);
+}
 
+void Render::setup(){
+	outline = sf::VertexArray(sf::LineStrip, 5);
+	for(size_t i = 0; i < outline.getVertexCount(); i++) outline[i].color = COLOR_GRID;
+	update_outline_position();
 }
 
 void Render::update(){
-	window.render_window.clear();
+	window.render_window.clear(COLOR_BACKGROUND);
 
-	// const size_t CELL_SIZE = 11;
-
-	// sf::VertexArray block(sf::TriangleStrip, 4);
-
-	// for(size_t x = 0; x < map.width; x++){
-	// 	for(size_t y = 0; y < map.height; y++){
-	// 		block[0].position = sf::Vector2f(x * CELL_SIZE, y * CELL_SIZE);
-	// 		block[1].position = sf::Vector2f(x * CELL_SIZE, (y + 1) * CELL_SIZE);
-	// 		block[2].position = sf::Vector2f((x + 1) * CELL_SIZE, y * CELL_SIZE);
-	// 		block[3].position = sf::Vector2f((x + 1) * CELL_SIZE, (y + 1) * CELL_SIZE);
-
-	// 		switch(map.cells[x][y].type){
-	// 		case Map::Cell::Type::WIRE:
-	// 			if(true) for(unsigned short i = 0; i < 4; i++) block[i].color = sf::Color(251, 242, 54);
-	// 			else for(unsigned short i = 0; i < 4; i++) block[i].color = sf::Color(75, 72, 17);
-
-	// 			window.render_window.draw(block);
-	// 		}
-	// 	}
-	// }
+	window.render_window.draw(outline);
 
 	window.render_window.display();
 }

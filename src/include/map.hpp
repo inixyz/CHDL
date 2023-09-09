@@ -11,7 +11,7 @@ namespace dcm{
 		};
 
 		struct WireGroup{
-			unsigned int state;
+			unsigned int state = 0;
 			std::vector<Position> connected_inputs;
 		};
 
@@ -20,14 +20,14 @@ namespace dcm{
 			enum Type{
 				EMPTY, WIRE, JUNCTION, AND_GATE, NAND_GATE, OR_GATE, NOR_GATE, 
 				XOR_GATE, XNOR_GATE, NOT_GATE, YES_GATE
-			}type;
+			}type = EMPTY;
 
 			union{
-				WireGroup* wire_group;
+				WireGroup* wire_group = NULL;
 				struct{
-					bool last_out;
-					void (*behaviour)();
-				};
+					bool last_out = false;
+					void (*behaviour)() = NULL;
+				}gate;
 			};
 		};
 
