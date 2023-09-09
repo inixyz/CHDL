@@ -11,18 +11,23 @@ namespace dcm{
 		};
 
 		struct WireGroup{
-			bool state;
+			unsigned int state;
 			std::vector<Position> connected_inputs;
 		};
 
+	public:
 		struct Cell{
 			enum Type{
-				EMPTY, WIRE, GATE
+				EMPTY, WIRE, JUNCTION, AND_GATE, NAND_GATE, OR_GATE, NOR_GATE, 
+				XOR_GATE, XNOR_GATE, NOT_GATE, YES_GATE
 			}type;
 
 			union{
 				WireGroup* wire_group;
-				void (*behaviour)();
+				struct{
+					bool last_out;
+					void (*behaviour)();
+				};
 			};
 		};
 
