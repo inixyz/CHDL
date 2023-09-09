@@ -15,4 +15,6 @@ void Window::update(){
 	while(render_window.pollEvent(event))
 		if(event.type == sf::Event::Closed)
 			render_window.close();
+
+	delta_time = delta_time_clock.restart().asMilliseconds();
 }
