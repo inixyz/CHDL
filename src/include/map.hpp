@@ -27,6 +27,7 @@ namespace dcm{
 		};
 
 	public:
+		size_t width, height;
 		std::vector<std::vector<Cell>> cells;
 		std::list<WireGroup> wire_groups;
 
