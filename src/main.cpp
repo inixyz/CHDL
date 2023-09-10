@@ -56,20 +56,19 @@ public:
 };
 
 class Map{
-public:
-	enum CellType{
-		EMPTY, WIRE, JUNCTION, AND_GATE, NAND_GATE, OR_GATE, NOR_GATE, 
-		XOR_GATE, XNOR_GATE, NOT_GATE, YES_GATE
-	};
-
 private:
 	struct WireGroup{
 		unsigned int state = 0;
 		std::vector<sf::Vector2u> connected_inputs;
 	};
 
+public:
 	struct Cell{
-		CellType type = EMPTY;
+		enum Type{
+			EMPTY, WIRE, JUNCTION, AND_GATE, NAND_GATE, OR_GATE, NOR_GATE, 
+			XOR_GATE, XNOR_GATE, NOT_GATE, YES_GATE
+		}type = EMPTY;
+
 		union{
 			WireGroup* wire_group = NULL;
 			struct{
@@ -119,7 +118,7 @@ public:
 		map_outline[3].position = sf::Vector2f(0, map.height * CELL_SIZE);
 	}
 
-	void render(Window& window){
+	void render_world(Window& window){
 		window.render_window.clear(COLOR_BACKGROUND);
 		window.render_window.draw(map_outline);
 		window.render_window.display();
@@ -142,6 +141,7 @@ int main(){
 
 	while(window.render_window.isOpen()){
 		window.update();
-		Render::get_instance().render(window);
+
+		Render::get_instance().render_world(window);
 	}
 }
