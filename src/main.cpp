@@ -5,10 +5,10 @@
 
 class Config{
 public:
-	size_t window_width = 640, window_height = 480;
-	unsigned int frame_rate_limit = 30;
+	size_t window_width = 800, window_height = 800;
+	unsigned int frame_rate_limit = 60;
 	bool vsync = true;
-	float camera_move_speed = 100;
+	float camera_move_speed = 200;
 
 public:
 	Config(const std::string file_name){
@@ -71,14 +71,11 @@ public:
 			XOR_GATE, XNOR_GATE, NOT_GATE, YES_GATE
 		}type = EMPTY;
 
-		union{
-			WireGroup* wire_group = NULL;
-			struct{
-				sf::Vector2i direction = sf::Vector2i(0, 0);
-				bool last_out = false;
-				void (*behaviour)() = NULL;
-			}gate;
-		};
+		WireGroup* wire_group = NULL;
+
+		sf::Vector2i direction = sf::Vector2i(0, 0);
+		bool last_out = false;
+		void (*behaviour)() = NULL;
 	};
 
 public:
