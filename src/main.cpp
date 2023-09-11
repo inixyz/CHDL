@@ -8,7 +8,7 @@ public:
 	size_t window_width = 800, window_height = 800;
 	unsigned int frame_rate_limit = 60;
 	bool vsync = true;
-	float camera_move_speed = 200;
+	float camera_move_speed = 250, camera_zoom_speed = 1;
 
 public:
 	Config(const std::string file_name){
@@ -25,6 +25,7 @@ public:
 		frame_rate_limit = json["frame_rate_limit"];
 		vsync = json["vsync"];
 		camera_move_speed = json["camera_move_speed"];
+		camera_zoom_speed = json["camera_zoom_speed"];
 	}
 };
 
@@ -92,8 +93,12 @@ public:
 	}
 };
 
-sf::Vector2f normalize_vector2f(sf::Vector2f vec){
-	float magnitude = vec.x * vec.x + vec.y * vec.y;
+float vector2f_magnitude(const sf::Vector2f vec){
+	return vec.x * vec.x + vec.y * vec.y;
+}
+
+sf::Vector2f vector2f_normalize(sf::Vector2f vec){
+	float magnitude = vector2f_magnitude(vec);
 	if(magnitude > 0) vec /= magnitude;
 	return vec;
 }
@@ -103,11 +108,13 @@ public:
 	sf::View view;
 
 private:
-	float move_speed;
+	float move_speed, zoom_speed;
+	float zoom_factor = 1;
 
 public:
-	Camera(const size_t width, const size_t height, const float move_speed){
+	Camera(const size_t width, const size_t height, const float move_speed, const float zoom_speed){
 		this->move_speed = move_speed;
+		this->zoom_speed = zoom_speed;
 		view = sf::View(sf::FloatRect(0, 0, width, height));
 	}
 
@@ -117,7 +124,13 @@ public:
 		direction.x = sf::Keyboard::isKeyPressed(sf::Keyboard::D) - sf::Keyboard::isKeyPressed(sf::Keyboard::A);
 		direction.y = sf::Keyboard::isKeyPressed(sf::Keyboard::S) - sf::Keyboard::isKeyPressed(sf::Keyboard::W);
 
-		view.move(normalize_vector2f(direction) * move_speed * delta_time);
+		view.move(vector2f_normalize(direction) * move_speed * zoom_factor * delta_time);
+
+		short int zoom_direction = sf::Keyboard::isKeyPressed(sf::Keyboard::Hyphen) - sf::Keyboard::isKeyPressed(sf::Keyboard::Equal);
+		float zoom_amount = 1 + zoom_direction * zoom_speed * delta_time;
+		zoom_factor *= zoom_amount;
+
+		view.zoom(zoom_amount);
 	}
 };
 
@@ -174,7 +187,7 @@ int main(){
 	map.reset(30, 30);
 	Render::get_instance().set_map_outline_position(map.width * Render::get_instance().CELL_SIZE, map.height * Render::get_instance().CELL_SIZE);
 
-	Camera camera(config.window_width, config.window_height, config.camera_move_speed);
+	Camera camera(config.window_width, config.window_height, config.camera_move_speed, config.camera_zoom_speed);
 
 	while(window.render_window.isOpen()){
 		window.update();
