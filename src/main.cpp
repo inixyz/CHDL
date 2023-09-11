@@ -119,19 +119,20 @@ public:
 		view = sf::View(sf::FloatRect(0, 0, width, height));
 	}
 
-	void update(const float delta_time){
-		sf::Vector2f direction(0, 0);
+	void update(Window& window){
+		if(window.render_window.hasFocus()){
+			sf::Vector2f direction;
+			direction.x = sf::Keyboard::isKeyPressed(sf::Keyboard::D) - sf::Keyboard::isKeyPressed(sf::Keyboard::A);
+			direction.y = sf::Keyboard::isKeyPressed(sf::Keyboard::S) - sf::Keyboard::isKeyPressed(sf::Keyboard::W);
 
-		direction.x = sf::Keyboard::isKeyPressed(sf::Keyboard::D) - sf::Keyboard::isKeyPressed(sf::Keyboard::A);
-		direction.y = sf::Keyboard::isKeyPressed(sf::Keyboard::S) - sf::Keyboard::isKeyPressed(sf::Keyboard::W);
+			view.move(vector2f_normalize(direction) * move_speed * zoom_factor * window.delta_time);
 
-		view.move(vector2f_normalize(direction) * move_speed * zoom_factor * delta_time);
+			short int zoom_direction = sf::Keyboard::isKeyPressed(sf::Keyboard::Hyphen) - sf::Keyboard::isKeyPressed(sf::Keyboard::Equal);
+			float zoom_amount = 1 + zoom_direction * zoom_speed * window.delta_time;
+			zoom_factor *= zoom_amount;
 
-		short int zoom_direction = sf::Keyboard::isKeyPressed(sf::Keyboard::Hyphen) - sf::Keyboard::isKeyPressed(sf::Keyboard::Equal);
-		float zoom_amount = 1 + zoom_direction * zoom_speed * delta_time;
-		zoom_factor *= zoom_amount;
-
-		view.zoom(zoom_amount);
+			view.zoom(zoom_amount);
+		}
 	}
 };
 
@@ -227,7 +228,7 @@ int main(){
 	while(window.render_window.isOpen()){
 		window.update();
 
-		camera.update(window.delta_time);
+		camera.update(window);
 
 		Render::get_instance().render(window, camera, map.width, map.height);
 	}
