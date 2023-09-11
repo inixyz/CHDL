@@ -166,7 +166,7 @@ public:
 		map_outline[3].position = sf::Vector2f(0, map_height) * (float)CELL_SIZE;
 	}
 
-	void render(Window& window, Camera& camera, bool show_grid, const size_t map_width, const size_t map_height){
+	void render(Window& window, Camera& camera, const bool show_grid, const size_t map_width, const size_t map_height){
 		set_world_view_bounds(camera, map_width, map_height);
 
 		window.render_window.clear(COLOR_BACKGROUND);
@@ -196,7 +196,7 @@ private:
 		world_view_end_pos.y = std::max(0, std::min((int)(camera_end_pos.y / CELL_SIZE), (int)map_height));
 	}
 
-	void draw_world(Window& window, Camera& camera, bool show_grid){
+	void draw_world(Window& window, Camera& camera, const bool show_grid){
 		window.render_window.setView(camera.view);
 
 		if(show_grid){
