@@ -141,10 +141,10 @@ public:
 
 private:
 	const sf::Color COLOR_BACKGROUND = sf::Color(16, 20, 31);
-	const sf::Color COLOR_GRID = sf::Color(26, 30, 41);
-	const sf::Color COLOR_MAP_OUTLINE = sf::Color(66, 70, 81);
+	const sf::Color COLOR_MAP_OUTLINE = sf::Color(200, 200, 200);
+	const sf::Color COLOR_GRID = sf::Color(66, 70, 81);
 
-	sf::VertexArray map_outline;
+	sf::VertexArray map_outline, grid;
 	sf::Vector2u world_view_start_pos, world_view_end_pos;
 
 public:
@@ -156,16 +156,17 @@ public:
 	Render(Render const&) = delete;
 	void operator=(Render const&) = delete;
 
-	void set_map_outline_position(const size_t width, const size_t height){
+	void set_map_outline_position(const size_t map_width, const size_t map_height){
 		map_outline[0].position = map_outline[4].position = sf::Vector2f(0, 0);
-		map_outline[1].position = sf::Vector2f(width, 0);
-		map_outline[2].position = sf::Vector2f(width, height);
-		map_outline[3].position = sf::Vector2f(0, height);
+		map_outline[1].position = sf::Vector2f(map_width, 0) * (float)CELL_SIZE;
+		map_outline[2].position = sf::Vector2f(map_width, map_height) * (float)CELL_SIZE;
+		map_outline[3].position = sf::Vector2f(0, map_height) * (float)CELL_SIZE;
 	}
 
 	void render(Window& window, Camera& camera, const size_t map_width, const size_t map_height){
-		window.render_window.clear(COLOR_BACKGROUND);
 		set_world_view_bounds(camera, map_width, map_height);
+
+		window.render_window.clear(COLOR_BACKGROUND);
 		draw_world(window, camera);
 		window.render_window.display();
 	}
@@ -174,14 +175,17 @@ private:
 	Render(){
 		map_outline = sf::VertexArray(sf::LineStrip, 5);
 		for(size_t i = 0; i < map_outline.getVertexCount(); i++) map_outline[i].color = COLOR_MAP_OUTLINE;
+
+		grid = sf::VertexArray(sf::Lines, 2);
+		grid[0].color = grid[1].color = COLOR_GRID;
 	}
 
 	void set_world_view_bounds(Camera& camera, const size_t map_width, const size_t map_height){
 		sf::Vector2f camera_start_pos, camera_end_pos;
-		camera_start_pos.x = camera.view.getCenter().x - camera.view.getSize().x / 2;
-		camera_start_pos.y = camera.view.getCenter().y - camera.view.getSize().y / 2;
-		camera_end_pos.x = camera.view.getCenter().x + camera.view.getSize().x / 2;
-		camera_end_pos.y = camera.view.getCenter().y + camera.view.getSize().y / 2;
+		camera_start_pos.x = camera.view.getCenter().x - camera.view.getSize().x / 2 - CELL_SIZE;
+		camera_start_pos.y = camera.view.getCenter().y - camera.view.getSize().y / 2 - CELL_SIZE;
+		camera_end_pos.x = camera.view.getCenter().x + camera.view.getSize().x / 2 + CELL_SIZE;
+		camera_end_pos.y = camera.view.getCenter().y + camera.view.getSize().y / 2 + CELL_SIZE;
 
 		world_view_start_pos.x = std::max(0, std::min((int)(camera_start_pos.x / CELL_SIZE), (int)map_width));
 		world_view_start_pos.y = std::max(0, std::min((int)(camera_start_pos.y / CELL_SIZE), (int)map_height));
@@ -191,6 +195,21 @@ private:
 
 	void draw_world(Window& window, Camera& camera){
 		window.render_window.setView(camera.view);
+
+		for(unsigned int x = world_view_start_pos.x + 1; x < world_view_end_pos.x; x++){
+			grid[0].position = sf::Vector2f(x, world_view_start_pos.y) * (float)CELL_SIZE;
+			grid[1].position = sf::Vector2f(x, world_view_end_pos.y) * (float)CELL_SIZE;
+
+			window.render_window.draw(grid);
+		}
+
+		for(unsigned int y = world_view_start_pos.y + 1; y < world_view_end_pos.y; y++){
+			grid[0].position = sf::Vector2f(world_view_start_pos.x, y) * (float)CELL_SIZE;
+			grid[1].position = sf::Vector2f(world_view_end_pos.x, y) * (float)CELL_SIZE;
+
+			window.render_window.draw(grid);
+		}
+
 		window.render_window.draw(map_outline);
 	}
 };
@@ -201,7 +220,7 @@ int main(){
 
 	Map map;
 	map.reset(30, 30);
-	Render::get_instance().set_map_outline_position(map.width * Render::get_instance().CELL_SIZE, map.height * Render::get_instance().CELL_SIZE);
+	Render::get_instance().set_map_outline_position(map.width, map.height);
 
 	Camera camera(config.window_width, config.window_height, config.camera_move_speed, config.camera_zoom_speed);
 
