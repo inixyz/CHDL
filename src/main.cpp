@@ -2,6 +2,7 @@
 #include "json.hpp"
 #include <SFML/Graphics.hpp>
 #include <list>
+#include <algorithm>
 
 class Config{
 public:
@@ -144,6 +145,7 @@ private:
 	const sf::Color COLOR_MAP_OUTLINE = sf::Color(66, 70, 81);
 
 	sf::VertexArray map_outline;
+	sf::Vector2u world_view_start_pos, world_view_end_pos;
 
 public:
 	static Render& get_instance(){
@@ -161,8 +163,9 @@ public:
 		map_outline[3].position = sf::Vector2f(0, height);
 	}
 
-	void render(Window& window, Camera& camera){
+	void render(Window& window, Camera& camera, const size_t map_width, const size_t map_height){
 		window.render_window.clear(COLOR_BACKGROUND);
+		set_world_view_bounds(camera, map_width, map_height);
 		draw_world(window, camera);
 		window.render_window.display();
 	}
@@ -171,6 +174,19 @@ private:
 	Render(){
 		map_outline = sf::VertexArray(sf::LineStrip, 5);
 		for(size_t i = 0; i < map_outline.getVertexCount(); i++) map_outline[i].color = COLOR_MAP_OUTLINE;
+	}
+
+	void set_world_view_bounds(Camera& camera, const size_t map_width, const size_t map_height){
+		sf::Vector2f camera_start_pos, camera_end_pos;
+		camera_start_pos.x = camera.view.getCenter().x - camera.view.getSize().x / 2;
+		camera_start_pos.y = camera.view.getCenter().y - camera.view.getSize().y / 2;
+		camera_end_pos.x = camera.view.getCenter().x + camera.view.getSize().x / 2;
+		camera_end_pos.y = camera.view.getCenter().y + camera.view.getSize().y / 2;
+
+		world_view_start_pos.x = std::max(0, std::min((int)(camera_start_pos.x / CELL_SIZE), (int)map_width));
+		world_view_start_pos.y = std::max(0, std::min((int)(camera_start_pos.y / CELL_SIZE), (int)map_height));
+		world_view_end_pos.x = std::max(0, std::min((int)(camera_end_pos.x / CELL_SIZE), (int)map_width));
+		world_view_end_pos.y = std::max(0, std::min((int)(camera_end_pos.y / CELL_SIZE), (int)map_height));
 	}
 
 	void draw_world(Window& window, Camera& camera){
@@ -194,6 +210,6 @@ int main(){
 
 		camera.update(window.delta_time);
 
-		Render::get_instance().render(window, camera);
+		Render::get_instance().render(window, camera, map.width, map.height);
 	}
 }
