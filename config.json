@@ -4,5 +4,6 @@
 	"frame_rate_limit": 60,
 	"vsync": false,
 	"camera_move_speed": 500,
-	"camera_zoom_speed": 1
+	"camera_zoom_speed": 1,
+	"show_grid": true
 }

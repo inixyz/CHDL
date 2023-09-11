@@ -10,6 +10,7 @@ public:
 	unsigned int frame_rate_limit = 60;
 	bool vsync = true;
 	float camera_move_speed = 250, camera_zoom_speed = 1;
+	bool show_grid = true;
 
 public:
 	Config(const std::string file_name){
@@ -27,6 +28,7 @@ public:
 		vsync = json["vsync"];
 		camera_move_speed = json["camera_move_speed"];
 		camera_zoom_speed = json["camera_zoom_speed"];
+		show_grid = json["show_grid"];
 	}
 };
 
@@ -164,11 +166,11 @@ public:
 		map_outline[3].position = sf::Vector2f(0, map_height) * (float)CELL_SIZE;
 	}
 
-	void render(Window& window, Camera& camera, const size_t map_width, const size_t map_height){
+	void render(Window& window, Camera& camera, bool show_grid, const size_t map_width, const size_t map_height){
 		set_world_view_bounds(camera, map_width, map_height);
 
 		window.render_window.clear(COLOR_BACKGROUND);
-		draw_world(window, camera);
+		draw_world(window, camera, show_grid);
 		window.render_window.display();
 	}
 
@@ -194,23 +196,25 @@ private:
 		world_view_end_pos.y = std::max(0, std::min((int)(camera_end_pos.y / CELL_SIZE), (int)map_height));
 	}
 
-	void draw_world(Window& window, Camera& camera){
+	void draw_world(Window& window, Camera& camera, bool show_grid){
 		window.render_window.setView(camera.view);
 
-		for(unsigned int x = world_view_start_pos.x + 1; x < world_view_end_pos.x; x++){
-			grid[0].position = sf::Vector2f(x, world_view_start_pos.y) * (float)CELL_SIZE;
-			grid[1].position = sf::Vector2f(x, world_view_end_pos.y) * (float)CELL_SIZE;
+		if(show_grid){
+			for(unsigned int x = world_view_start_pos.x + 1; x < world_view_end_pos.x; x++){
+				grid[0].position = sf::Vector2f(x, world_view_start_pos.y) * (float)CELL_SIZE;
+				grid[1].position = sf::Vector2f(x, world_view_end_pos.y) * (float)CELL_SIZE;
 
-			window.render_window.draw(grid);
+				window.render_window.draw(grid);
+			}
+
+			for(unsigned int y = world_view_start_pos.y + 1; y < world_view_end_pos.y; y++){
+				grid[0].position = sf::Vector2f(world_view_start_pos.x, y) * (float)CELL_SIZE;
+				grid[1].position = sf::Vector2f(world_view_end_pos.x, y) * (float)CELL_SIZE;
+
+				window.render_window.draw(grid);
+			}
 		}
-
-		for(unsigned int y = world_view_start_pos.y + 1; y < world_view_end_pos.y; y++){
-			grid[0].position = sf::Vector2f(world_view_start_pos.x, y) * (float)CELL_SIZE;
-			grid[1].position = sf::Vector2f(world_view_end_pos.x, y) * (float)CELL_SIZE;
-
-			window.render_window.draw(grid);
-		}
-
+		
 		window.render_window.draw(map_outline);
 	}
 };
@@ -230,6 +234,6 @@ int main(){
 
 		camera.update(window);
 
-		Render::get_instance().render(window, camera, map.width, map.height);
+		Render::get_instance().render(window, camera, config.show_grid, map.width, map.height);
 	}
 }
