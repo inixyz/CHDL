@@ -154,7 +154,16 @@ public:
 	}
 
 	void update(Window& window, Camera& camera, Map& map, const bool show_grid){
-		set_world_view_bounds(camera, map.width, map.height);
+		sf::Vector2f camera_start_pos, camera_end_pos;
+		camera_start_pos.x = camera.view.getCenter().x - camera.view.getSize().x / 2 - CELL_SIZE;
+		camera_start_pos.y = camera.view.getCenter().y - camera.view.getSize().y / 2 - CELL_SIZE;
+		camera_end_pos.x = camera.view.getCenter().x + camera.view.getSize().x / 2 + CELL_SIZE;
+		camera_end_pos.y = camera.view.getCenter().y + camera.view.getSize().y / 2 + CELL_SIZE;
+
+		world_view_start_pos.x = std::max(0, std::min((int)(camera_start_pos.x / CELL_SIZE), (int)map.width));
+		world_view_start_pos.y = std::max(0, std::min((int)(camera_start_pos.y / CELL_SIZE), (int)map.height));
+		world_view_end_pos.x = std::max(0, std::min((int)(camera_end_pos.x / CELL_SIZE), (int)map.width));
+		world_view_end_pos.y = std::max(0, std::min((int)(camera_end_pos.y / CELL_SIZE), (int)map.height));
 
 		window.render_window.clear(COLOR_BACKGROUND);
 		draw_world(window, camera, show_grid);
@@ -168,19 +177,6 @@ private:
 
 		grid = sf::VertexArray(sf::Lines, 2);
 		grid[0].color = grid[1].color = COLOR_GRID;
-	}
-
-	void set_world_view_bounds(Camera& camera, const size_t map_width, const size_t map_height){
-		sf::Vector2f camera_start_pos, camera_end_pos;
-		camera_start_pos.x = camera.view.getCenter().x - camera.view.getSize().x / 2 - CELL_SIZE;
-		camera_start_pos.y = camera.view.getCenter().y - camera.view.getSize().y / 2 - CELL_SIZE;
-		camera_end_pos.x = camera.view.getCenter().x + camera.view.getSize().x / 2 + CELL_SIZE;
-		camera_end_pos.y = camera.view.getCenter().y + camera.view.getSize().y / 2 + CELL_SIZE;
-
-		world_view_start_pos.x = std::max(0, std::min((int)(camera_start_pos.x / CELL_SIZE), (int)map_width));
-		world_view_start_pos.y = std::max(0, std::min((int)(camera_start_pos.y / CELL_SIZE), (int)map_height));
-		world_view_end_pos.x = std::max(0, std::min((int)(camera_end_pos.x / CELL_SIZE), (int)map_width));
-		world_view_end_pos.y = std::max(0, std::min((int)(camera_end_pos.y / CELL_SIZE), (int)map_height));
 	}
 
 	void draw_world(Window& window, Camera& camera, const bool show_grid){
