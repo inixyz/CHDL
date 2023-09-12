@@ -131,7 +131,7 @@ private:
 	const size_t CELL_SIZE = 11;
 
 	const sf::Color COLOR_BACKGROUND = sf::Color(16, 20, 31);
-	const sf::Color COLOR_MAP_OUTLINE = sf::Color(200, 200, 200);
+	const sf::Color COLOR_MAP_OUTLINE = sf::Color(166, 170, 181);
 	const sf::Color COLOR_GRID = sf::Color(66, 70, 81);
 
 	sf::Vector2u world_view_start_pos, world_view_end_pos;
