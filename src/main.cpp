@@ -14,10 +14,6 @@ public:
 
 public:
 	Config(const std::string file_name){
-		load(file_name);
-	}
-
-	void load(const std::string file_name){
 		std::ifstream file(file_name);
 		nlohmann::json json = nlohmann::json::parse(file);
 		file.close();
@@ -43,10 +39,6 @@ private:
 
 public:
 	Window(const size_t width, const size_t height, const unsigned int frame_rate_limit, const bool vsync){
-		create(width, height, frame_rate_limit, vsync);
-	}
-
-	void create(const size_t width, const size_t height, const unsigned int frame_rate_limit, const bool vsync){
 		render_window.create(sf::VideoMode(width, height), "DCM v0.0");
 		render_window.setFramerateLimit(frame_rate_limit);
 		render_window.setVerticalSyncEnabled(vsync);
@@ -72,10 +64,10 @@ public:
 	struct Cell{
 		enum Type{
 			EMPTY, WIRE, JUNCTION, AND_GATE, NAND_GATE, OR_GATE, NOR_GATE, 
-			XOR_GATE, XNOR_GATE, NOT_GATE, YES_GATE
+			XOR_GATE, XNOR_GATE, NOT_GATE, BUFFER_GATE
 		}type = EMPTY;
 
-		WireGroup* wire_group = NULL;
+		WireGroup* wire_group;
 
 		sf::Vector2i direction = sf::Vector2i(0, 0);
 		bool last_out = false;
@@ -88,7 +80,7 @@ public:
 	std::vector<std::vector<Cell>> cells;
 
 public:
-	void reset(const size_t width, const size_t height){
+	Map(const size_t width, const size_t height){
 		this->width = width;
 		this->height = height;
 
@@ -96,12 +88,8 @@ public:
 	}
 };
 
-float vector2f_magnitude(const sf::Vector2f vec){
-	return vec.x * vec.x + vec.y * vec.y;
-}
-
 sf::Vector2f vector2f_normalize(sf::Vector2f vec){
-	float magnitude = vector2f_magnitude(vec);
+	float magnitude = vec.x * vec.x + vec.y * vec.y;
 	if(magnitude > 0) vec /= magnitude;
 	return vec;
 }
@@ -139,16 +127,15 @@ public:
 };
 
 class Render{
-public:
+private:
 	const size_t CELL_SIZE = 11;
 
-private:
 	const sf::Color COLOR_BACKGROUND = sf::Color(16, 20, 31);
 	const sf::Color COLOR_MAP_OUTLINE = sf::Color(200, 200, 200);
 	const sf::Color COLOR_GRID = sf::Color(66, 70, 81);
 
-	sf::VertexArray map_outline, grid;
 	sf::Vector2u world_view_start_pos, world_view_end_pos;
+	sf::VertexArray map_outline, grid;
 
 public:
 	static Render& get_instance(){
@@ -166,8 +153,8 @@ public:
 		map_outline[3].position = sf::Vector2f(0, map_height) * (float)CELL_SIZE;
 	}
 
-	void render(Window& window, Camera& camera, const bool show_grid, const size_t map_width, const size_t map_height){
-		set_world_view_bounds(camera, map_width, map_height);
+	void update(Window& window, Camera& camera, Map& map, const bool show_grid){
+		set_world_view_bounds(camera, map.width, map.height);
 
 		window.render_window.clear(COLOR_BACKGROUND);
 		draw_world(window, camera, show_grid);
@@ -223,17 +210,14 @@ int main(){
 	Config config("config.json");
 	Window window(config.window_width, config.window_height, config.frame_rate_limit, config.vsync);
 
-	Map map;
-	map.reset(30, 30);
+	Map map(30, 30);
 	Render::get_instance().set_map_outline_position(map.width, map.height);
 
 	Camera camera(config.window_width, config.window_height, config.camera_move_speed, config.camera_zoom_speed);
 
 	while(window.render_window.isOpen()){
 		window.update();
-
 		camera.update(window);
-
-		Render::get_instance().render(window, camera, config.show_grid, map.width, map.height);
+		Render::get_instance().update(window, camera, map, config.show_grid);
 	}
 }
