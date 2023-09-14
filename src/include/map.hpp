@@ -18,11 +18,10 @@ public:
 			XOR_GATE, XNOR_GATE, NOT_GATE, BUFFER_GATE
 		}type = EMPTY;
 
-		WireGroup* wire_group;
-
+		WireGroup* wire_group = NULL;
+		void (*behaviour)() = NULL;
 		sf::Vector2i direction = sf::Vector2i(0, 0);
 		bool last_out = false;
-		void (*behaviour)() = NULL;
 	};
 
 public:
