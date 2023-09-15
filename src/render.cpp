@@ -49,24 +49,11 @@ void Render::set_view_bounds(Camera& camera, Map& map){
 	view_end_pos.y = std::max(0, std::min((int)(camera_end_pos.y / CELL_SIZE), (int)map.height));
 }
 
-void Render::update_cell_texture(Map::Cell map_cell){
-	static Map::Cell::Type last_type;
-	static sf::Vector2i last_direction;
-
-	if(map_cell.type == last_type && map_cell.direction == last_direction) return;
-	else{
-		last_type = map_cell.type;
-		last_direction = map_cell.direction;
-	}
-
+sf::Vector2u Render::get_texture_pos(Map::Cell::Type type, sf::Vector2i direction){
 	sf::Vector2u texture_pos;
 
-	switch(map_cell.type){
-	case Map::Cell::Type::WIRE: 
-		if(map_cell.wire_group->state) texture_pos = sf::Vector2u(2, 0);
-		else texture_pos = sf::Vector2u(1, 0);
-		break;
-
+	switch(type){
+	case Map::Cell::Type::WIRE: texture_pos = sf::Vector2u(1, 0); break;
 	case Map::Cell::Type::JUNCTION: texture_pos = sf::Vector2u(3, 0); break;
 	case Map::Cell::Type::AND_GATE: texture_pos = sf::Vector2u(4, 0); break;
 	case Map::Cell::Type::NAND_GATE: texture_pos = sf::Vector2u(8, 0); break;
@@ -78,11 +65,27 @@ void Render::update_cell_texture(Map::Cell map_cell){
 	case Map::Cell::Type::BUFFER_GATE: texture_pos = sf::Vector2u(0, 2); break;
 	}
 
-	if(map_cell.type != Map::Cell::Type::WIRE && map_cell.type != Map::Cell::Type::JUNCTION){
-		if(map_cell.direction == sf::Vector2i(0, -1)) texture_pos.x += 1;
-		else if(map_cell.direction == sf::Vector2i(-1, 0)) texture_pos.x += 2;
-		else if(map_cell.direction == sf::Vector2i(0, 1)) texture_pos.x += 3;
+	if(type != Map::Cell::Type::WIRE && type != Map::Cell::Type::JUNCTION){
+		if(direction == sf::Vector2i(0, -1)) texture_pos.x += 1;
+		else if(direction == sf::Vector2i(-1, 0)) texture_pos.x += 2;
+		else if(direction == sf::Vector2i(0, 1)) texture_pos.x += 3;
 	}
+
+	return texture_pos;
+}
+
+void Render::update_cell_texture(Map::Cell map_cell){
+	static Map::Cell::Type last_type;
+	static sf::Vector2i last_direction;
+
+	if(map_cell.type == last_type && map_cell.direction == last_direction) return;
+	else{
+		last_type = map_cell.type;
+		last_direction = map_cell.direction;
+	}
+
+	sf::Vector2u texture_pos = get_texture_pos(map_cell.type, map_cell.direction);
+	if(map_cell.type == Map::Cell::Type::WIRE && map_cell.wire_group->state) texture_pos.x += 1;
 
 	cell.setTextureRect(sf::IntRect(texture_pos.x * CELL_SIZE, texture_pos.y * CELL_SIZE, CELL_SIZE, CELL_SIZE));
 }

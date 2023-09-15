@@ -2,6 +2,7 @@
 #include "window.hpp"
 #include "camera.hpp"
 #include "map.hpp"
+#include "editor.hpp"
 #include "render.hpp"
 
 int main(){
@@ -22,6 +23,7 @@ int main(){
 	while(window.render_window.isOpen()){
 		window.update();
 		camera.update(window);
+		Editor::get_instance().update(window);
 		Render::get_instance().update(window, camera, map, config.show_grid);
 	}
 }
