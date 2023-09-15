@@ -18,6 +18,7 @@ private:
 	sf::VertexArray map_outline, grid;
 	sf::Texture tileset;
 	sf::RectangleShape cell;
+	sf::RectangleShape cursor_cell;
 
 public:
 	static Render& get_instance(){
@@ -36,4 +37,5 @@ private:
 	sf::Vector2u get_texture_pos(Map::Cell::Type type, sf::Vector2i direction);
 	void update_cell_texture(Map::Cell map_cell);
 	void draw_world(Window& window, Camera& camera, Map& map, bool show_grid);
+	void draw_cursor_cell(Window& window);
 };
