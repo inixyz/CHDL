@@ -11,7 +11,7 @@ void Render::update(Window& window, Camera& camera, Map& map, bool show_grid){
 	set_view_bounds(camera, map);
 
 	window.render_window.clear(COLOR_BACKGROUND);
-	draw_world(window, camera, show_grid);
+	draw_world(window, camera, map, show_grid);
 	window.render_window.display();
 }
 
@@ -28,6 +28,15 @@ Render::Render(){
 }
 
 void Render::set_view_bounds(Camera& camera, Map& map){
+	static float last_zoom_factor;
+	static sf::Vector2f last_camera_center;
+
+	if(camera.view.getCenter() == last_camera_center && camera.zoom_factor == last_zoom_factor) return;
+	else{
+		last_camera_center = camera.view.getCenter();
+		last_zoom_factor = camera.zoom_factor;
+	}
+
 	sf::Vector2f camera_start_pos, camera_end_pos;
 	camera_start_pos.x = camera.view.getCenter().x - camera.view.getSize().x / 2 - CELL_SIZE;
 	camera_start_pos.y = camera.view.getCenter().y - camera.view.getSize().y / 2 - CELL_SIZE;
@@ -40,8 +49,56 @@ void Render::set_view_bounds(Camera& camera, Map& map){
 	view_end_pos.y = std::max(0, std::min((int)(camera_end_pos.y / CELL_SIZE), (int)map.height));
 }
 
-void Render::draw_world(Window& window, Camera& camera, bool show_grid){
+void Render::update_cell_texture(Map::Cell map_cell){
+	static Map::Cell::Type last_type;
+	static sf::Vector2i last_direction;
+
+	if(map_cell.type == last_type && map_cell.direction == last_direction) return;
+	else{
+		last_type = map_cell.type;
+		last_direction = map_cell.direction;
+	}
+
+	sf::Vector2u texture_pos;
+
+	switch(map_cell.type){
+	case Map::Cell::Type::WIRE: 
+		if(map_cell.wire_group->state) texture_pos = sf::Vector2u(2, 0);
+		else texture_pos = sf::Vector2u(1, 0);
+		break;
+
+	case Map::Cell::Type::JUNCTION: texture_pos = sf::Vector2u(3, 0); break;
+	case Map::Cell::Type::AND_GATE: texture_pos = sf::Vector2u(4, 0); break;
+	case Map::Cell::Type::NAND_GATE: texture_pos = sf::Vector2u(8, 0); break;
+	case Map::Cell::Type::OR_GATE: texture_pos = sf::Vector2u(12, 0); break;
+	case Map::Cell::Type::NOR_GATE: texture_pos = sf::Vector2u(0, 1); break;
+	case Map::Cell::Type::XOR_GATE: texture_pos = sf::Vector2u(4, 1); break;
+	case Map::Cell::Type::XNOR_GATE: texture_pos = sf::Vector2u(8, 1); break;
+	case Map::Cell::Type::NOT_GATE: texture_pos = sf::Vector2u(12, 1); break;
+	case Map::Cell::Type::BUFFER_GATE: texture_pos = sf::Vector2u(0, 2); break;
+	}
+
+	if(map_cell.type != Map::Cell::Type::WIRE && map_cell.type != Map::Cell::Type::JUNCTION){
+		if(map_cell.direction == sf::Vector2i(0, -1)) texture_pos.x += 1;
+		else if(map_cell.direction == sf::Vector2i(-1, 0)) texture_pos.x += 2;
+		else if(map_cell.direction == sf::Vector2i(0, 1)) texture_pos.x += 3;
+	}
+
+	cell.setTextureRect(sf::IntRect(texture_pos.x * CELL_SIZE, texture_pos.y * CELL_SIZE, CELL_SIZE, CELL_SIZE));
+}
+
+void Render::draw_world(Window& window, Camera& camera, Map& map, bool show_grid){
 	window.render_window.setView(camera.view);
+
+	for(unsigned int x = view_start_pos.x; x < view_end_pos.x; x++){
+		for(unsigned int y = view_start_pos.y; y < view_end_pos.y; y++){
+			if(map.cells[x][y].type == Map::Cell::Type::EMPTY) continue;
+
+			cell.setPosition(x * CELL_SIZE, y * CELL_SIZE);
+			update_cell_texture(map.cells[x][y]);
+			window.render_window.draw(cell);
+		}
+	}
 
 	if(show_grid){
 		for(unsigned int x = view_start_pos.x + 1; x < view_end_pos.x; x++){

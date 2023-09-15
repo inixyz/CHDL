@@ -6,10 +6,10 @@
 class Camera{
 public:
 	sf::View view;
+	float zoom_factor = 1;
 
 private:
 	float move_speed, zoom_speed;
-	float zoom_factor = 1;
 
 public:
 	void create(unsigned int width, unsigned int height, float move_speed, float zoom_speed);

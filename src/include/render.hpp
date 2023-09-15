@@ -32,5 +32,6 @@ public:
 private:
 	Render();
 	void set_view_bounds(Camera& camera, Map& map);
-	void draw_world(Window& window, Camera& camera, bool show_grid);
+	void update_cell_texture(Map::Cell map_cell);
+	void draw_world(Window& window, Camera& camera, Map& map, bool show_grid);
 };
