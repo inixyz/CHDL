@@ -7,6 +7,7 @@
 class Editor{
 public:
 	struct{
+		bool valid;
 		Map::Cell::Type type;
 		sf::Vector2u position;
 		sf::Vector2i direction;
@@ -21,7 +22,7 @@ public:
 	Editor(Editor const&) = delete;
 	void operator=(Editor const&) = delete;
 
-	void update(Window& window);
+	void update(Window& window, Map& map);
 
 private:
 	Editor();

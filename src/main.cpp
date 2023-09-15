@@ -23,7 +23,7 @@ int main(){
 	while(window.render_window.isOpen()){
 		window.update();
 		camera.update(window);
-		Editor::get_instance().update(window);
+		Editor::get_instance().update(window, map);
 		Render::get_instance().update(window, camera, map, config.show_grid);
 	}
 }

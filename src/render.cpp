@@ -13,7 +13,6 @@ void Render::update(Window& window, Camera& camera, Map& map, bool show_grid){
 
 	window.render_window.clear(COLOR_BACKGROUND);
 	draw_world(window, camera, map, show_grid);
-	draw_cursor_cell(window);
 	window.render_window.display();
 }
 
@@ -30,7 +29,7 @@ Render::Render(){
 
 	cursor_cell.setTexture(&tileset);
 	cursor_cell.setSize(sf::Vector2f(CELL_SIZE, CELL_SIZE));
-	cursor_cell.setFillColor(sf::Color(255, 255, 255));
+	cursor_cell.setFillColor(sf::Color(100, 100, 100, 200));
 }
 
 void Render::set_view_bounds(Camera& camera, Map& map){
@@ -96,6 +95,16 @@ void Render::update_cell_texture(Map::Cell map_cell){
 	cell.setTextureRect(sf::IntRect(texture_pos.x * CELL_SIZE, texture_pos.y * CELL_SIZE, CELL_SIZE, CELL_SIZE));
 }
 
+void Render::draw_cursor_cell(Window& window){
+	if(Editor::get_instance().cursor_cell.type == Map::Cell::Type::EMPTY || !Editor::get_instance().cursor_cell.valid) return;
+
+ 	cursor_cell.setPosition((sf::Vector2f)(Editor::get_instance().cursor_cell.position * CELL_SIZE));
+	sf::Vector2u texture_pos = get_texture_pos(Editor::get_instance().cursor_cell.type, Editor::get_instance().cursor_cell.direction);
+	cursor_cell.setTextureRect(sf::IntRect(texture_pos.x * CELL_SIZE, texture_pos.y * CELL_SIZE, CELL_SIZE, CELL_SIZE));
+
+	window.render_window.draw(cursor_cell);
+}
+
 void Render::draw_world(Window& window, Camera& camera, Map& map, bool show_grid){
 	window.render_window.setView(camera.view);
 
@@ -108,6 +117,8 @@ void Render::draw_world(Window& window, Camera& camera, Map& map, bool show_grid
 			window.render_window.draw(cell);
 		}
 	}
+
+	draw_cursor_cell(window);
 
 	if(show_grid){
 		for(unsigned int x = view_start_pos.x + 1; x < view_end_pos.x; x++){
@@ -126,15 +137,4 @@ void Render::draw_world(Window& window, Camera& camera, Map& map, bool show_grid
 	}
 	
 	window.render_window.draw(map_outline);
-}
-
-void Render::draw_cursor_cell(Window& window){
-	if(Editor::get_instance().cursor_cell.type == Map::Cell::Type::EMPTY) return;
-
-	Editor::get_instance().cursor_cell.position = Editor::get_instance().cursor_cell.position / CELL_SIZE;
- 	cursor_cell.setPosition((sf::Vector2f)(Editor::get_instance().cursor_cell.position * CELL_SIZE));
-	sf::Vector2u texture_pos = get_texture_pos(Editor::get_instance().cursor_cell.type, Editor::get_instance().cursor_cell.direction);
-	cursor_cell.setTextureRect(sf::IntRect(texture_pos.x * CELL_SIZE, texture_pos.y * CELL_SIZE, CELL_SIZE, CELL_SIZE));
-
-	window.render_window.draw(cursor_cell);
 }
