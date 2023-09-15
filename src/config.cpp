@@ -9,6 +9,7 @@ void Config::load(std::string file_name){
 
 	window_width = json["window_width"];
 	window_height = json["window_height"];
+	fullscreen = json["fullscreen"];
 	frame_rate_limit = json["frame_rate_limit"];
 	vsync = json["vsync"];
 	camera_move_speed = json["camera_move_speed"];

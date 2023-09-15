@@ -12,6 +12,6 @@ private:
 	sf::Clock clock;
 
 public:
-	void create(unsigned int width, unsigned int height, unsigned int frame_rate_limit, bool vsync);
+	void create(unsigned int width, unsigned int height, bool fullscreen, unsigned int frame_rate_limit, bool vsync);
 	void update();
 };

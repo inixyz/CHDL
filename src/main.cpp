@@ -9,7 +9,7 @@ int main(){
 	config.load("config.json");
 
 	Window window;
-	window.create(config.window_width, config.window_height, config.frame_rate_limit, config.vsync);
+	window.create(config.window_width, config.window_height, config.fullscreen, config.frame_rate_limit, config.vsync);
 
 	Camera camera;
 	camera.create(config.window_width, config.window_height, config.camera_move_speed, config.camera_zoom_speed);
