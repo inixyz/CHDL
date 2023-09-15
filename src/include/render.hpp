@@ -14,6 +14,7 @@ private:
 	const sf::Color COLOR_GRID = sf::Color(66, 70, 81);
 
 	sf::Vector2u view_start_pos, view_end_pos;
+
 	sf::VertexArray map_outline, grid;
 	sf::Texture tileset;
 	sf::RectangleShape cell;

@@ -6,7 +6,7 @@ void Config::load(std::string file_name){
 	std::ifstream file(file_name);
 	nlohmann::json json = nlohmann::json::parse(file);
 	file.close();
-
+	
 	window_width = json["window_width"];
 	window_height = json["window_height"];
 	fullscreen = json["fullscreen"];
