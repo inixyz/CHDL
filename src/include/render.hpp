@@ -15,6 +15,8 @@ private:
 
 	sf::Vector2u view_start_pos, view_end_pos;
 	sf::VertexArray map_outline, grid;
+	sf::Texture tileset;
+	sf::RectangleShape cell;
 
 public:
 	static Render& get_instance(){

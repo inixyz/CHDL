@@ -21,6 +21,10 @@ Render::Render(){
 
 	grid = sf::VertexArray(sf::Lines, 2);
 	grid[0].color = grid[1].color = COLOR_GRID;
+
+	tileset.loadFromFile("assets/tileset.png");
+	cell.setTexture(&tileset);
+	cell.setSize(sf::Vector2f(CELL_SIZE, CELL_SIZE));
 }
 
 void Render::set_view_bounds(Camera& camera, Map& map){
