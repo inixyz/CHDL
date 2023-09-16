@@ -7,7 +7,7 @@
 class Editor{
 public:
 	struct{
-		bool valid;
+		bool valid = false;
 		Map::Cell::Type type;
 		sf::Vector2u position;
 		sf::Vector2i direction;
