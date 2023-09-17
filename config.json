@@ -1,12 +1,10 @@
 {
-	"window_width": 1920,
-	"window_height": 1080,
+	"window_size_x": 1600,
+	"window_size_y": 900,
 	"fullscreen": false,
-	"frame_rate_limit": 60,
+	"fps_limit": 60,
 	"vsync": false,
-
 	"camera_move_speed": 500,
 	"camera_zoom_speed": 1,
-	
 	"show_grid": true
 }

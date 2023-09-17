@@ -1,17 +1,20 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "window.hpp"
 
+namespace digital_circuit_maker{
 class Camera{
 public:
-	sf::View view;
-	float zoom_factor = 1;
+	void create(const sf::Vector2u size, const float move_speed, 
+		const float zoom_speed);
+	void process_movement(const float delta_time);
+	void process_zoom(const float delta_time);
+	const sf::View& get_view() const;
+	float get_zoom_factor() const;
 
 private:
-	float move_speed, zoom_speed;
-
-public:
-	void create(unsigned int width, unsigned int height, float move_speed, float zoom_speed);
-	void update(Window& window);
+	sf::View view;
+	float move_speed, zoom_speed; 
+	float zoom_factor = 1;
 };
+}

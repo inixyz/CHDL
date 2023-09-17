@@ -1,17 +1,16 @@
 #pragma once
 
-#include <SFML/System.hpp>
 #include <vector>
 #include <list>
+#include <SFML/System.hpp>
 
+namespace digital_circuit_maker{
 class Map{
-private:
+public:
 	struct WireGroup{
 		unsigned int state = 0;
 		std::vector<sf::Vector2u> connected_inputs;
 	};
-
-public:
 	struct Cell{
 		enum Type{
 			EMPTY, WIRE, JUNCTION, AND_GATE, NAND_GATE, OR_GATE, NOR_GATE, 
@@ -24,11 +23,13 @@ public:
 		bool last_out = false;
 	};
 
-public:
-	unsigned int width, height;
-	std::list<WireGroup> wire_groups;
 	std::vector<std::vector<Cell>> cells;
+	std::list<WireGroup> wire_groups;
 
-public:
-	void reset(unsigned int width, unsigned int height);
+	void reset(const sf::Vector2u size);
+	sf::Vector2u get_size() const;
+
+private:
+	sf::Vector2u size;
 };
+}

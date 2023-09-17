@@ -1,16 +1,24 @@
 #include "editor.hpp"
 #include "render.hpp"
 
-void Editor::update(Window& window, Map& map){
-	if(window.render_window.hasFocus()){
-		sf::Vector2i mouse_position = sf::Mouse::getPosition(window.render_window);
-		cursor_cell.position = (sf::Vector2u)window.render_window.mapPixelToCoords(mouse_position);
-		cursor_cell.position /= Render::get_instance().CELL_SIZE;
-	}
+namespace digital_circuit_maker{
+void Editor::process_movement(const sf::RenderWindow& render_window, 
+	const sf::Vector2u map_size){
 
-	cursor_cell.valid = cursor_cell.position.x < map.width && cursor_cell.position.y < map.height;
+	sf::Vector2i mpos = sf::Mouse::getPosition(render_window);
+	cursor_cell.position = (sf::Vector2u)render_window.mapPixelToCoords(mpos);
+	cursor_cell.position /= Render::get_instance().CELL_SIZE;
+
+	bool x_ok = cursor_cell.position.x < map_size.x;
+	bool y_ok = cursor_cell.position.y < map_size.y;
+	cursor_cell.valid = x_ok && y_ok;
+}
+
+const Editor::CursorCell& Editor::get_cursor_cell() const{
+	return cursor_cell;
 }
 
 Editor::Editor(){
-	
+
+}
 }

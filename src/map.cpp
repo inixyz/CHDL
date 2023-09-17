@@ -1,8 +1,13 @@
 #include "map.hpp"
 
-void Map::reset(unsigned int width, unsigned int height){
-	this->width = width;
-	this->height = height;
+namespace digital_circuit_maker{
+void Map::reset(const sf::Vector2u size){
+	this->size = size;
 
-	cells = std::vector<std::vector<Cell>>(width, std::vector<Cell>(height));
+	cells = std::vector<std::vector<Cell>>(size.x, std::vector<Cell>(size.y));
+}
+
+sf::Vector2u Map::get_size() const{
+	return size;
+}
 }
