@@ -15,6 +15,7 @@ public:
 
 	void process_movement(const sf::RenderWindow& render_window, 
 		const sf::Vector2u map_size);
+	void process_rotation();
 	const CursorCell& get_cursor_cell() const;
 	static Editor& get_instance(){
 		static Editor instance;

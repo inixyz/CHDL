@@ -38,6 +38,7 @@ int main(){
 
 			Editor::get_instance().process_movement(window.get_render_window(), 
 				map.get_size());
+			Editor::get_instance().process_rotation();
 		}
 
 		Render::get_instance().render(window.get_render_window(), camera, map);
