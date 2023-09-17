@@ -38,6 +38,6 @@ const Editor::CursorCell& Editor::get_cursor_cell() const{
 }
 
 Editor::Editor(){
-	cursor_cell.type = Map::Cell::Type::AND_GATE;
+
 }
 }
