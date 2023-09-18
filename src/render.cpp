@@ -18,10 +18,8 @@ void Render::render(sf::RenderWindow& render_window, const Camera& camera,
 	set_bounds(camera, map.get_size());
 
 	render_window.clear(COLOR_BACKGROUND);
-
 	render_window.setView(camera.get_view());
 	draw_world(render_window, map);
-	
 	render_window.display();
 }
 
