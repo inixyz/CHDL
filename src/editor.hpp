@@ -16,6 +16,7 @@ public:
 	void process_movement(const sf::RenderWindow& render_window, 
 		const sf::Vector2u map_size);
 	void process_rotation();
+	void process_placement(Map& map) const;
 	void set_cursor_cell_type(const Map::Cell::Type type);
 	const CursorCell& get_cursor_cell() const;
 	static Editor& get_instance(){
@@ -28,6 +29,7 @@ public:
 private:
 	CursorCell cursor_cell;
 
+	void place_block(Map& map) const;
 	Editor();
 };
 }

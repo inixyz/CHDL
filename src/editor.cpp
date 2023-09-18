@@ -31,12 +31,37 @@ void Editor::process_rotation(){
 	last_key_state = sf::Keyboard::isKeyPressed(sf::Keyboard::R);
 }
 
+void Editor::process_placement(Map& map) const{
+	if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
+		if(cursor_cell.valid_position) 
+			if(cursor_cell.type != Map::Cell::Type::EMPTY) place_block(map);
+	}
+}
+
 void Editor::set_cursor_cell_type(const Map::Cell::Type type){
 	cursor_cell.type = type;
 }
 
 const Editor::CursorCell& Editor::get_cursor_cell() const{
 	return cursor_cell;
+}
+
+void Editor::place_block(Map& map) const{
+	sf::Vector2u pos = cursor_cell.position;
+
+	bool same_type = map.cells[pos.x][pos.y].type == cursor_cell.type;
+	bool same_direction = map.cells[pos.x][pos.y].direction == cursor_cell.direction;
+	if(same_type && same_direction) return;
+
+	Map::Cell new_cell = {
+		.type = cursor_cell.type,
+		.wire_group = NULL,
+		.behaviour = NULL,
+		.direction = cursor_cell.direction,
+		.last_out = false
+	};
+
+	map.cells[pos.x][pos.y] = new_cell;
 }
 
 Editor::Editor(){
