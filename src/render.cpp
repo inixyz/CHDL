@@ -131,12 +131,14 @@ void Render::draw_cursor_cell(sf::RenderWindow& render_window){
 		Editor::get_instance().get_cursor_cell();
 
 	if(editor_cursor.type == Map::Cell::Type::EMPTY) return;
+	if(ImGui::GetIO().WantCaptureMouse) return;
 	if(!editor_cursor.valid_position) return;
 
  	cursor_cell.setPosition((sf::Vector2f)(editor_cursor.position * CELL_SIZE));
 
 	sf::Vector2u texture_pos = get_texture_pos(editor_cursor.type, 
 		editor_cursor.direction);
+	if(editor_cursor.type == Map::Cell::Type::WIRE) texture_pos.x += 1;
 
 	sf::IntRect texture_rect(texture_pos.x * CELL_SIZE, 
 		texture_pos.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);

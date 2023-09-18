@@ -31,6 +31,10 @@ void Editor::process_rotation(){
 	last_key_state = sf::Keyboard::isKeyPressed(sf::Keyboard::R);
 }
 
+void Editor::set_cursor_cell_type(const Map::Cell::Type type){
+	cursor_cell.type = type;
+}
+
 const Editor::CursorCell& Editor::get_cursor_cell() const{
 	return cursor_cell;
 }

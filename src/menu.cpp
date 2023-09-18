@@ -1,6 +1,7 @@
 #include "menu.hpp"
 #include <SFML/Graphics.hpp>
 #include "imgui/imgui.h"
+#include "editor.hpp"
 
 namespace digital_circuit_maker::menu{
 static sf::Texture empty_selection_texture;
@@ -47,27 +48,38 @@ void editor_tools(){
 
 	ImGui::SeparatorText("Part picker");
 
-	ImGui::ImageButton(empty_selection_texture);
+	if(ImGui::ImageButton(empty_selection_texture))
+		Editor::get_instance().set_cursor_cell_type(Map::Cell::Type::EMPTY);
 	ImGui::SameLine();
-	ImGui::ImageButton(wire_texture);
+	if(ImGui::ImageButton(wire_texture))
+		Editor::get_instance().set_cursor_cell_type(Map::Cell::Type::WIRE);
 	ImGui::SameLine();
-	ImGui::ImageButton(junction_texture);
+	if(ImGui::ImageButton(junction_texture))
+		Editor::get_instance().set_cursor_cell_type(Map::Cell::Type::JUNCTION);
 
-	ImGui::ImageButton(buffer_texture);
+	if(ImGui::ImageButton(buffer_texture))
+		Editor::get_instance().set_cursor_cell_type(Map::Cell::Type::BUFFER_GATE);
 	ImGui::SameLine();
-	ImGui::ImageButton(not_texture);
+	if(ImGui::ImageButton(not_texture))
+		Editor::get_instance().set_cursor_cell_type(Map::Cell::Type::NOT_GATE);
 	ImGui::SameLine();
-	ImGui::ImageButton(or_texture);
+	if(ImGui::ImageButton(or_texture))
+		Editor::get_instance().set_cursor_cell_type(Map::Cell::Type::OR_GATE);
 	ImGui::SameLine();
-	ImGui::ImageButton(and_texture);
+	if(ImGui::ImageButton(and_texture))
+		Editor::get_instance().set_cursor_cell_type(Map::Cell::Type::AND_GATE);
 
-	ImGui::ImageButton(xor_texture);
+	if(ImGui::ImageButton(xor_texture))
+		Editor::get_instance().set_cursor_cell_type(Map::Cell::Type::XOR_GATE);
 	ImGui::SameLine();
-	ImGui::ImageButton(xnor_texture);
+	if(ImGui::ImageButton(xnor_texture))
+		Editor::get_instance().set_cursor_cell_type(Map::Cell::Type::XNOR_GATE);
 	ImGui::SameLine();
-	ImGui::ImageButton(nor_texture);
+	if(ImGui::ImageButton(nor_texture))
+		Editor::get_instance().set_cursor_cell_type(Map::Cell::Type::NOR_GATE);
 	ImGui::SameLine();
-	ImGui::ImageButton(nand_texture);
+	if(ImGui::ImageButton(nand_texture))
+		Editor::get_instance().set_cursor_cell_type(Map::Cell::Type::NAND_GATE);
 
 	ImGui::End();
 }

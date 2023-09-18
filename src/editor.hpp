@@ -8,7 +8,7 @@ class Editor{
 public:
 	struct CursorCell{
 		bool valid_position = false;
-		Map::Cell::Type type;
+		Map::Cell::Type type = Map::Cell::Type::EMPTY;
 		sf::Vector2u position;
 		sf::Vector2i direction;
 	};
@@ -16,6 +16,7 @@ public:
 	void process_movement(const sf::RenderWindow& render_window, 
 		const sf::Vector2u map_size);
 	void process_rotation();
+	void set_cursor_cell_type(const Map::Cell::Type type);
 	const CursorCell& get_cursor_cell() const;
 	static Editor& get_instance(){
 		static Editor instance;
