@@ -32,9 +32,19 @@ void Editor::process_rotation(){
 }
 
 void Editor::process_placement(Map& map) const{
-	if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
+	bool left_pressed = sf::Mouse::isButtonPressed(sf::Mouse::Left);
+	bool right_pressed = sf::Mouse::isButtonPressed(sf::Mouse::Right);
+	if(left_pressed && !right_pressed){
 		if(cursor_cell.valid_position) 
-			if(cursor_cell.type != Map::Cell::Type::EMPTY) place_block(map);
+			if(cursor_cell.type != Map::Cell::Type::EMPTY) place_cell(map);
+	}
+}
+
+void Editor::process_removal(Map& map) const{
+	bool left_pressed = sf::Mouse::isButtonPressed(sf::Mouse::Left);
+	bool right_pressed = sf::Mouse::isButtonPressed(sf::Mouse::Right);
+	if(right_pressed && !left_pressed){
+		if(cursor_cell.valid_position) remove_cell(map);
 	}
 }
 
@@ -46,7 +56,7 @@ const Editor::CursorCell& Editor::get_cursor_cell() const{
 	return cursor_cell;
 }
 
-void Editor::place_block(Map& map) const{
+void Editor::place_cell(Map& map) const{
 	sf::Vector2u pos = cursor_cell.position;
 
 	bool same_type = map.cells[pos.x][pos.y].type == cursor_cell.type;
@@ -58,6 +68,22 @@ void Editor::place_block(Map& map) const{
 		.wire_group = NULL,
 		.behaviour = NULL,
 		.direction = cursor_cell.direction,
+		.last_out = false
+	};
+
+	map.cells[pos.x][pos.y] = new_cell;
+}
+
+void Editor::remove_cell(Map& map) const{
+	sf::Vector2u pos = cursor_cell.position;
+
+	if(map.cells[pos.x][pos.y].type == Map::Cell::Type::EMPTY) return;
+
+	Map::Cell new_cell = {
+		.type = Map::Cell::Type::EMPTY,
+		.wire_group = NULL,
+		.behaviour = NULL,
+		.direction = sf::Vector2i(0, 0),
 		.last_out = false
 	};
 
