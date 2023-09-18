@@ -1,4 +1,5 @@
 #include "render.hpp"
+#include "imgui/imgui.h"
 #include "editor.hpp"
 
 namespace digital_circuit_maker{
@@ -18,8 +19,12 @@ void Render::render(sf::RenderWindow& render_window, const Camera& camera,
 	set_bounds(camera, map.get_size());
 
 	render_window.clear(COLOR_BACKGROUND);
+
 	render_window.setView(camera.get_view());
 	draw_world(render_window, map);
+
+	ImGui::SFML::Render(render_window);
+
 	render_window.display();
 }
 

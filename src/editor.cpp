@@ -1,8 +1,6 @@
 #include "editor.hpp"
 #include "render.hpp"
 
-#include <iostream>
-
 namespace digital_circuit_maker{
 void Editor::process_movement(const sf::RenderWindow& render_window, 
 	const sf::Vector2u map_size){

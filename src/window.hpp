@@ -11,11 +11,10 @@ public:
 	void refresh_delta_time();
 	sf::RenderWindow& get_render_window();
 	float get_delta_time() const;
+	~Window();
 
 private:
 	sf::RenderWindow render_window;
-	sf::Event event;
-	sf::Clock clock;
 	float delta_time;
 };
 }
