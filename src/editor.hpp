@@ -7,7 +7,7 @@ namespace digital_circuit_maker{
 class Editor{
 public:
 	struct CursorCell{
-		bool valid = false;
+		bool valid_position = false;
 		Map::Cell::Type type;
 		sf::Vector2u position;
 		sf::Vector2i direction;

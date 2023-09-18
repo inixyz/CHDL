@@ -30,9 +30,13 @@ int main(){
 	Render::get_instance().show_grid = cfg["show_grid"];
 	Render::get_instance().set_map_outline_position(map.get_size());
 
+	menu::init();
+
 	while(window.get_render_window().isOpen()){
 		window.refresh_delta_time();
 		window.handle_events();
+
+		menu::editor_tools();
 
 		if(window.get_render_window().hasFocus()){
 			if(!ImGui::GetIO().WantCaptureKeyboard){
@@ -46,8 +50,6 @@ int main(){
 					map.get_size());
 			}
 		}
-
-		menu::part_picker();
 
 		Render::get_instance().render(window.get_render_window(), camera, map);
 	}

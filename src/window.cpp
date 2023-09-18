@@ -15,6 +15,8 @@ void Window::create(const sf::Vector2u size, const bool fullscreen,
 
 	if(!ImGui::SFML::Init(render_window))
 		std::cout << "ImGui::SFML::Init error" << std::endl;
+
+	ImGui::StyleColorsClassic();
 }
 
 void Window::handle_events(){

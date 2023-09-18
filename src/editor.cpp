@@ -11,7 +11,7 @@ void Editor::process_movement(const sf::RenderWindow& render_window,
 
 	bool x_ok = cursor_cell.position.x < map_size.x;
 	bool y_ok = cursor_cell.position.y < map_size.y;
-	cursor_cell.valid = x_ok && y_ok;
+	cursor_cell.valid_position = x_ok && y_ok;
 }
 
 void Editor::process_rotation(){

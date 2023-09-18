@@ -131,7 +131,7 @@ void Render::draw_cursor_cell(sf::RenderWindow& render_window){
 		Editor::get_instance().get_cursor_cell();
 
 	if(editor_cursor.type == Map::Cell::Type::EMPTY) return;
-	if(!editor_cursor.valid) return;
+	if(!editor_cursor.valid_position) return;
 
  	cursor_cell.setPosition((sf::Vector2f)(editor_cursor.position * CELL_SIZE));
 
