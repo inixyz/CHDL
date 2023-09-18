@@ -7,6 +7,8 @@ using json = nlohmann::json;
 #include "map.hpp"
 #include "render.hpp"
 #include "editor.hpp"
+#include "imgui/imgui.h"
+#include "menu.hpp"
 using namespace digital_circuit_maker;
 
 int main(){
@@ -33,13 +35,19 @@ int main(){
 		window.handle_events();
 
 		if(window.get_render_window().hasFocus()){
-			camera.process_movement(window.get_delta_time());
-			camera.process_zoom(window.get_delta_time());
+			if(!ImGui::GetIO().WantCaptureKeyboard){
+				camera.process_movement(window.get_delta_time());
+				camera.process_zoom(window.get_delta_time());
+				Editor::get_instance().process_rotation();
+			}
 
-			Editor::get_instance().process_movement(window.get_render_window(), 
-				map.get_size());
-			Editor::get_instance().process_rotation();
+			if(!ImGui::GetIO().WantCaptureMouse){
+				Editor::get_instance().process_movement(window.get_render_window(), 
+					map.get_size());
+			}
 		}
+
+		menu::part_picker();
 
 		Render::get_instance().render(window.get_render_window(), camera, map);
 	}
