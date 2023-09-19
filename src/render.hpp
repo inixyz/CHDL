@@ -39,4 +39,4 @@ private:
 	void draw_cursor_cell(sf::RenderWindow& render_window);
 	void draw_world(sf::RenderWindow& render_window, const Map& map);
 };
-}
+} 
