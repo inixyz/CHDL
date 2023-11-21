@@ -3,4 +3,4 @@ emulator:
 	add codeview window
 
 asembler:
-	make assembler
+	make assembler not depent on indentation
