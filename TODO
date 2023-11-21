@@ -1,0 +1,6 @@
+emulator:
+	test functionality
+	add codeview window
+
+asembler:
+	make assembler
